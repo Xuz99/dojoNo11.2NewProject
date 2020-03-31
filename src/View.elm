@@ -12,13 +12,15 @@ view model =
     div Attributes.dino
         [ h1 [] [ text "Dino Catalog!" ]
         , input (Attributes.textInput DinoName "Name") []
+        , viewValidation model "name"
         , input (Attributes.textInput DinoAge "Age") []
+        , viewValidation model "age"
         , input (Attributes.textInput SaveDinoKind "Kind") []
+        , viewValidation model "kind"
         , button Attributes.button [ text "Send me a new Dino!" ]
         , br [] []
         , br [] []
         , viewDinos model
-        , viewValidation model
         ]
 
 
@@ -57,10 +59,36 @@ viewDinos model =
         ]
 
 
-viewValidation : Model -> Html msg
-viewValidation model =
-    if model.name == "" || model.age == 0 || model.kind == Big then
-        div [ style "color" "red" ] [ text "Nothing to read" ]
+viewValidation : Model -> String -> Html msg
+viewValidation model field =
+    let
+        errorMsg =
+            div [ style "color" "red" ] [ text "Nothing to read" ]
 
-    else
-        div [ style "color" "green" ] [ text "Something to insert!" ]
+        successMsg =
+            div [ style "color" "green" ] [ text "Something to insert!" ]
+    in
+    case field of
+        "name" ->
+            if model.name == "" then
+                errorMsg
+
+            else
+                successMsg
+
+        "age" ->
+            if model.age == 0 then
+                errorMsg
+
+            else
+                successMsg
+
+        "kind" ->
+            if List.member model.kind [ Big, Medium, Small ] then
+                successMsg
+
+            else
+                errorMsg
+
+        _ ->
+            div [] []

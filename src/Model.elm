@@ -6,7 +6,6 @@ type alias Model =
     , age : Int
     , kind : DinoKind
     , dinoList : List Dino
-    , formValidation : Bool
     }
 
 

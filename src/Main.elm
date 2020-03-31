@@ -16,4 +16,4 @@ main =
 
 init : Model
 init =
-    Model "" 0 NoKind [] False
+    Model "" 0 NoKind []

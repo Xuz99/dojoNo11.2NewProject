@@ -8,18 +8,10 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         DinoName name ->
-            if name == "" then
-                { model | formValidation = False }
-
-            else
-                { model | name = name }
+            { model | name = name }
 
         DinoAge age ->
-            if Maybe.withDefault 0 (String.toInt age) == 0 then
-                { model | formValidation = False }
-
-            else
-                { model | age = Maybe.withDefault 0 (String.toInt age) }
+            { model | age = Maybe.withDefault 0 (String.toInt age) }
 
         SaveDinoKind kind ->
             let
@@ -37,11 +29,7 @@ update msg model =
                         _ ->
                             NoKind
             in
-            if transformedKind == NoKind then
-                { model | formValidation = False }
-
-            else
-                { model | kind = transformedKind }
+            { model | kind = transformedKind }
 
         DinoList ->
             let
