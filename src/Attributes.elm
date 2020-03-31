@@ -1,5 +1,9 @@
 module Attributes exposing (..)
 
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
+import Msg exposing (..)
+
 
 dino =
     [ style "margin" "0px"
