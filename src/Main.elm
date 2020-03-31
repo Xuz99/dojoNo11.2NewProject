@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Attributes exposing (..)
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -99,45 +100,14 @@ update msg model =
                 { model | dinoList = newDino :: model.dinoList }
 
 
-dinoAttributes =
-    [ style "margin" "0px"
-    , style "padding" "100px"
-    , style "font-family" "system-ui"
-    , style "background-color" "#e0e0d1"
-    , style "color" "#993333"
-    ]
-
-
-buttonAttributes =
-    [ style "color" "#ffffff"
-    , style "background-color" "#000000"
-    , style "text-transform" "capitalize"
-    , style "border" "0px"
-    , style "padding" "5px"
-    , style "margin" "5px"
-    , onClick DinoList
-    ]
-
-
-inputAttributes customInputs customPlaceHolders =
-    [ onInput customInputs
-    , placeholder customPlaceHolders
-    , style "background-color" "#ffbb99"
-    , style "color" "red"
-    , style "border" "0px"
-    , style "padding" "5px"
-    , style "margin" "5px"
-    ]
-
-
 view : Model -> Html Msg
 view model =
-    div dinoAttributes
+    div Attributes.dino
         [ h1 [] [ text "Dino Catalog!" ]
-        , input (inputAttributes DinoName "Name") []
-        , input (inputAttributes DinoAge "Age") []
-        , input (inputAttributes SaveDinoKind "Kind") []
-        , button buttonAttributes [ text "Send me a new Dino!" ]
+        , input (Attributes.textInput DinoName "Name") []
+        , input (Attributes.textInput DinoAge "Age") []
+        , input (Attributes.textInput SaveDinoKind "Kind") []
+        , button Attributes.button [ text "Send me a new Dino!" ]
         , br [] []
         , br [] []
         , viewDinos model
