@@ -6,14 +6,20 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Model exposing (..)
 import Msg exposing (..)
+import Subs exposing (..)
 import Update exposing (..)
 import View exposing (..)
 
 
 main =
-    Browser.sandbox { init = init, view = view, update = update }
+    Browser.element { init = init, view = view, update = update, subscriptions = subs }
 
 
-init : Model
-init =
-    Model "" 0 NoKind []
+
+-- () in init's annotation means flags
+-- https://guide.elm-lang.org/interop/flags.html
+
+
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( Model "" 0 NoKind [], Cmd.none )
