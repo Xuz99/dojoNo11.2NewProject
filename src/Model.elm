@@ -10,6 +10,7 @@ type alias Model =
     , dinoSearch : String
     , filterKind : DinoKind
     , showConfirm : Bool
+    , fullTextFromInternet : String
     }
 
 

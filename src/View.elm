@@ -28,6 +28,7 @@ view model =
         , button (Attributes.button (DinoFilter NoKind)) [ text "Show All" ]
         , viewDinos model
         , viewConfirmAlert model
+        , pre [] [ text model.fullTextFromInternet ]
         ]
 
 

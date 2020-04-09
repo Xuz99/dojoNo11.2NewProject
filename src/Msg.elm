@@ -1,5 +1,6 @@
 module Msg exposing (..)
 
+import Http
 import Model exposing (..)
 
 
@@ -13,4 +14,5 @@ type Msg
     | DinoDelete Int
     | ConfirmAlert
     | CancelAlert
+    | GotText (Result Http.Error String)
     | NoOp

@@ -5,6 +5,7 @@ import DinosList
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Http
 import Model exposing (..)
 import Msg exposing (..)
 import Update exposing (..)
@@ -12,17 +13,28 @@ import View exposing (..)
 
 
 main =
-    Browser.sandbox { init = init, view = view, update = update }
+    Browser.element { init = init, subscriptions = subscriptions, view = view, update = update }
 
 
-init : Model
-init =
-    { name = ""
-    , age = 0
-    , kind = NoKind
-    , dinoIDToDelete = 999999999
-    , dinoList = DinosList.dinoCatalog
-    , dinoSearch = ""
-    , filterKind = NoKind
-    , showConfirm = False
-    }
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( { name = ""
+      , age = 0
+      , kind = NoKind
+      , dinoIDToDelete = 999999999
+      , dinoList = DinosList.dinoCatalog
+      , dinoSearch = ""
+      , filterKind = NoKind
+      , showConfirm = False
+      , fullTextFromInternet = ""
+      }
+    , Http.get
+        { url = "https://elm-lang.org/assets/public-opinion.txt"
+        , expect = Http.expectString GotText
+        }
+    )
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
