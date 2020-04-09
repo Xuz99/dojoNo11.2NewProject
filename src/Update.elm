@@ -53,17 +53,17 @@ update msg model =
             { model | filterKind = filterKind }
 
         DinoDelete toDeleteDinoID ->
-            let
-                newDinoList =
-                    List.filter (\dino -> dino.dinoID /= toDeleteDinoID) model.dinoList
-            in
-            { model | dinoList = newDinoList }
+            { model | dinoIDToDelete = toDeleteDinoID, showConfirm = True }
 
         ConfirmAlert ->
-            model
+            let
+                newDinoList =
+                    List.filter (\dino -> dino.dinoID /= model.dinoIDToDelete) model.dinoList
+            in
+            { model | dinoList = newDinoList, showConfirm = False }
 
         CancelAlert ->
-            model
+            { model | showConfirm = False }
 
         NoOp ->
             model

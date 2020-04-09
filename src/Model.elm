@@ -5,6 +5,7 @@ type alias Model =
     { name : String
     , age : Int
     , kind : DinoKind
+    , dinoIDToDelete : Int
     , dinoList : List Dino
     , dinoSearch : String
     , filterKind : DinoKind
