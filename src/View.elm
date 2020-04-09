@@ -11,16 +11,29 @@ view : Model -> Html Msg
 view model =
     div Attributes.dino
         [ h1 [] [ text "Dino Catalog!" ]
+        , viewSearchBar model
         , input (Attributes.textInput DinoName "Name") []
         , viewValidation model "name"
         , input (Attributes.textInput DinoAge "Age") []
         , viewValidation model "age"
         , input (Attributes.textInput SaveDinoKind "Kind") []
         , viewValidation model "kind"
-        , button Attributes.button [ text "Send me a new Dino!" ]
+        , button (Attributes.button DinoList) [ text "Send me a new Dino!" ]
         , br [] []
         , br [] []
+        , button (Attributes.button (DinoFilter Big)) [ text "Big Filter" ]
+        , button (Attributes.button (DinoFilter Medium)) [ text "Medium Filter" ]
+        , button (Attributes.button (DinoFilter Small)) [ text "Small Filter" ]
+        , button (Attributes.button (DinoFilter NoKind)) [ text "Show All" ]
         , viewDinos model
+        , viewConfirmAlert model
+        ]
+
+
+viewSearchBar : Model -> Html Msg
+viewSearchBar model =
+    div []
+        [ input (Attributes.searchBar DinoSearchInput "Search For A Dino!") []
         ]
 
 
@@ -49,14 +62,61 @@ viewDinos model =
                             String.fromInt dino.age
                     in
                     div []
-                        [ h1 [] [ text dino.name ]
-                        , h2 [] [ text dinoAgeString ]
-                        , h2 [] [ text dinoKindString ]
+                        [ h2 []
+                            [ text
+                                (dino.name
+                                    ++ " "
+                                    ++ ("Post ID: " ++ String.fromInt dino.dinoID)
+                                    ++ " Dino Age: "
+                                    ++ dinoAgeString
+                                    ++ " "
+                                    ++ " Dino Kind: "
+                                    ++ dinoKindString
+                                    ++ ""
+                                )
+                            , br [] []
+                            , button (Attributes.button NoOp) [ text "Edit" ]
+                            , button (Attributes.button (DinoDelete dino.dinoID)) [ text "Delete" ]
+                            ]
+
+                        --                        , p [] [ text ("Post ID: " ++ String.fromInt dino.dinoID) ]
+                        --                        , p [] [ text dinoAgeString ]
+                        --                        , p [] [ text dinoKindString ]
                         ]
                 )
-                model.dinoList
+                (model.dinoList
+                    |> List.filter
+                        (\dino ->
+                            if model.filterKind /= NoKind then
+                                model.filterKind == dino.kind
+
+                            else if model.dinoSearch == "" then
+                                True
+
+                            else
+                                String.startsWith model.dinoSearch dino.name
+                        )
+                    |> List.sortBy .dinoID
+                    |> List.reverse
+                )
+             --End of search filter
             )
         ]
+
+
+viewConfirmAlert : Model -> Html Msg
+viewConfirmAlert model =
+    case model.showConfirm of
+        True ->
+            div (Attributes.confirmAlert NoOp)
+                [ p [] [ text "Are you sure?" ]
+                , br [] []
+                , button [ onClick ConfirmAlert ] [ text "Yes" ]
+                , button [ onClick CancelAlert ] [ text "Cancel" ]
+                ]
+
+        False ->
+            div [] []
 
 
 viewValidation : Model -> String -> Html msg

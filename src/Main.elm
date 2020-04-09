@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Browser
+import DinosList
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -16,4 +17,11 @@ main =
 
 init : Model
 init =
-    Model "" 0 NoKind []
+    { name = ""
+    , age = 0
+    , kind = NoKind
+    , dinoList = DinosList.dinoCatalog
+    , dinoSearch = ""
+    , filterKind = NoKind
+    , showConfirm = False
+    }

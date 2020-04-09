@@ -34,7 +34,8 @@ update msg model =
         DinoList ->
             let
                 newDino =
-                    { name = model.name
+                    { dinoID = List.length model.dinoList + 1
+                    , name = model.name
                     , age = model.age
                     , kind = model.kind
                     }
@@ -44,3 +45,25 @@ update msg model =
 
             else
                 { model | dinoList = newDino :: model.dinoList }
+
+        DinoSearchInput inputString ->
+            { model | dinoSearch = inputString }
+
+        DinoFilter filterKind ->
+            { model | filterKind = filterKind }
+
+        DinoDelete toDeleteDinoID ->
+            let
+                newDinoList =
+                    List.filter (\dino -> dino.dinoID /= toDeleteDinoID) model.dinoList
+            in
+            { model | dinoList = newDinoList }
+
+        ConfirmAlert ->
+            model
+
+        CancelAlert ->
+            model
+
+        NoOp ->
+            model
