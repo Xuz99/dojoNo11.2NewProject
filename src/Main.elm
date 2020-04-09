@@ -1,25 +1,27 @@
 module Main exposing (..)
 
 import Browser
+import DinosList
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Model exposing (..)
 import Msg exposing (..)
-import Subs exposing (..)
 import Update exposing (..)
 import View exposing (..)
 
 
 main =
-    Browser.element { init = init, view = view, update = update, subscriptions = subs }
+    Browser.sandbox { init = init, view = view, update = update }
 
 
-
--- () in init's annotation means flags
--- https://guide.elm-lang.org/interop/flags.html
-
-
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( Model "" 0 NoKind [], Cmd.none )
+init : Model
+init =
+    { name = ""
+    , age = 0
+    , kind = NoKind
+    , dinoList = DinosList.dinoCatalog
+    , dinoSearch = ""
+    , filterKind = NoKind
+    , showConfirm = False
+    }

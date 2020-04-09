@@ -6,11 +6,15 @@ type alias Model =
     , age : Int
     , kind : DinoKind
     , dinoList : List Dino
+    , dinoSearch : String
+    , filterKind : DinoKind
+    , showConfirm : Bool
     }
 
 
 type alias Dino =
-    { name : String
+    { dinoID : Int
+    , name : String
     , age : Int
     , kind : DinoKind
     }
