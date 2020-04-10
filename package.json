@@ -1,0 +1,20 @@
+{
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkubera/dojoNo11.2NewProject.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mkubera/dojoNo11.2NewProject/issues"
+  },
+  "homepage": "https://github.com/mkubera/dojoNo11.2NewProject#readme",
+  "name": "Dino-Catalogue",
+  "private": true,
+  "dependencies": {
+    "elm-live": "^4.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "elm-live src/Main.elm --start-page=index.html -- --debug --output=js/main.js",
+    "prod": "elm-live src/Main.elm --start-page=index.html -- --optimize --output=js/main.js"
+  }
+}
