@@ -5,12 +5,18 @@ type alias Model =
     { name : String
     , age : Int
     , kind : DinoKind
+    , dinoIDToDelete : Int
     , dinoList : List Dino
+    , dinoSearch : String
+    , filterKind : DinoKind
+    , showConfirm : Bool
+    , fullTextFromInternet : String
     }
 
 
 type alias Dino =
-    { name : String
+    { dinoID : Int
+    , name : String
     , age : Int
     , kind : DinoKind
     }
