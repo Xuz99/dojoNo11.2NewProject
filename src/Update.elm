@@ -1,5 +1,6 @@
 module Update exposing (..)
 
+import CalledHttp exposing (..)
 import Model exposing (..)
 import Msg exposing (..)
 
@@ -69,6 +70,17 @@ update msg model =
             case result of
                 Ok stringFromInternet ->
                     ( { model | fullTextFromInternet = stringFromInternet }, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+        MorePlease ->
+            ( model, getCat )
+
+        GotGif result ->
+            case result of
+                Ok stringFromInternet ->
+                    ( { model | gifOfCatFromInternet = stringFromInternet }, Cmd.none )
 
                 Err _ ->
                     ( model, Cmd.none )

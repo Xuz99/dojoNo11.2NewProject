@@ -11,6 +11,7 @@ type alias Model =
     , filterKind : DinoKind
     , showConfirm : Bool
     , fullTextFromInternet : String
+    , gifOfCatFromInternet : String
     }
 
 

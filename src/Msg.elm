@@ -14,5 +14,7 @@ type Msg
     | DinoDelete Int
     | ConfirmAlert
     | CancelAlert
+    | MorePlease
     | GotText (Result Http.Error String)
+    | GotGif (Result Http.Error String)
     | NoOp
