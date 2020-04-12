@@ -10711,9 +10711,6 @@ var $elm$core$Basics$never = function (_v0) {
 	}
 };
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Msg$GotText = function (a) {
-	return {$: 'GotText', a: a};
-};
 var $author$project$Model$NoKind = {$: 'NoKind'};
 var $author$project$Model$Big = {$: 'Big'};
 var $author$project$Model$Medium = {$: 'Medium'};
@@ -10724,6 +10721,9 @@ var $author$project$DinosList$dinoCatalog = _List_fromArray(
 		{age: 11, dinoID: 2, kind: $author$project$Model$Small, name: 'Barny the Dino'},
 		{age: 16, dinoID: 3, kind: $author$project$Model$Medium, name: 'Max the Dino'}
 	]);
+var $author$project$Msg$GotGif = function (a) {
+	return {$: 'GotGif', a: a};
+};
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
 		return {$: 'BadStatus_', a: a, b: b};
@@ -10759,17 +10759,6 @@ var $elm$http$Http$expectStringResponse = F2(
 			$elm$core$Basics$identity,
 			A2($elm$core$Basics$composeR, toResult, toMsg));
 	});
-var $elm$http$Http$BadBody = function (a) {
-	return {$: 'BadBody', a: a};
-};
-var $elm$http$Http$BadStatus = function (a) {
-	return {$: 'BadStatus', a: a};
-};
-var $elm$http$Http$BadUrl = function (a) {
-	return {$: 'BadUrl', a: a};
-};
-var $elm$http$Http$NetworkError = {$: 'NetworkError'};
-var $elm$http$Http$Timeout = {$: 'Timeout'};
 var $elm$core$Result$mapError = F2(
 	function (f, result) {
 		if (result.$ === 'Ok') {
@@ -10781,6 +10770,17 @@ var $elm$core$Result$mapError = F2(
 				f(e));
 		}
 	});
+var $elm$http$Http$BadBody = function (a) {
+	return {$: 'BadBody', a: a};
+};
+var $elm$http$Http$BadStatus = function (a) {
+	return {$: 'BadStatus', a: a};
+};
+var $elm$http$Http$BadUrl = function (a) {
+	return {$: 'BadUrl', a: a};
+};
+var $elm$http$Http$NetworkError = {$: 'NetworkError'};
+var $elm$http$Http$Timeout = {$: 'Timeout'};
 var $elm$http$Http$resolve = F2(
 	function (toResult, response) {
 		switch (response.$) {
@@ -10804,12 +10804,19 @@ var $elm$http$Http$resolve = F2(
 					toResult(body));
 		}
 	});
-var $elm$http$Http$expectString = function (toMsg) {
-	return A2(
-		$elm$http$Http$expectStringResponse,
-		toMsg,
-		$elm$http$Http$resolve($elm$core$Result$Ok));
-};
+var $elm$http$Http$expectJson = F2(
+	function (toMsg, decoder) {
+		return A2(
+			$elm$http$Http$expectStringResponse,
+			toMsg,
+			$elm$http$Http$resolve(
+				function (string) {
+					return A2(
+						$elm$core$Result$mapError,
+						$elm$json$Json$Decode$errorToString,
+						A2($elm$json$Json$Decode$decodeString, decoder, string));
+				}));
+	});
 var $elm$http$Http$emptyBody = _Http_emptyBody;
 var $elm$http$Http$Request = function (a) {
 	return {$: 'Request', a: a};
@@ -10965,14 +10972,35 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
+var $author$project$CalledHttp$gifDecoder = A2(
+	$elm$json$Json$Decode$field,
+	'data',
+	A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string));
+var $author$project$CalledHttp$getCat = $elm$http$Http$get(
+	{
+		expect: A2($elm$http$Http$expectJson, $author$project$Msg$GotGif, $author$project$CalledHttp$gifDecoder),
+		url: 'https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=cat'
+	});
+var $author$project$Msg$GotText = function (a) {
+	return {$: 'GotText', a: a};
+};
+var $elm$http$Http$expectString = function (toMsg) {
+	return A2(
+		$elm$http$Http$expectStringResponse,
+		toMsg,
+		$elm$http$Http$resolve($elm$core$Result$Ok));
+};
+var $author$project$CalledHttp$getText = $elm$http$Http$get(
+	{
+		expect: $elm$http$Http$expectString($author$project$Msg$GotText),
+		url: 'https://elm-lang.org/assets/public-opinion.txt'
+	});
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		{age: 0, dinoIDToDelete: 999999999, dinoList: $author$project$DinosList$dinoCatalog, dinoSearch: '', filterKind: $author$project$Model$NoKind, fullTextFromInternet: '', kind: $author$project$Model$NoKind, name: '', showConfirm: false},
-		$elm$http$Http$get(
-			{
-				expect: $elm$http$Http$expectString($author$project$Msg$GotText),
-				url: 'https://elm-lang.org/assets/public-opinion.txt'
-			}));
+		{age: 0, dinoIDToDelete: 999999999, dinoList: $author$project$DinosList$dinoCatalog, dinoSearch: '', filterKind: $author$project$Model$NoKind, fullTextFromInternet: '', gifOfCatFromInternet: '', kind: $author$project$Model$NoKind, name: '', showConfirm: false},
+		$elm$core$Platform$Cmd$batch(
+			_List_fromArray(
+				[$author$project$CalledHttp$getText, $author$project$CalledHttp$getCat])));
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
@@ -11096,6 +11124,20 @@ var $author$project$Update$update = F2(
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
+			case 'MorePlease':
+				return _Utils_Tuple2(model, $author$project$CalledHttp$getCat);
+			case 'GotGif':
+				var result = msg.a;
+				if (result.$ === 'Ok') {
+					var stringFromInternet = result.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{gifOfCatFromInternet: stringFromInternet}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
 			default:
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
@@ -11150,6 +11192,40 @@ var $author$project$Attributes$textInput = F2(
 				A2($elm$html$Html$Attributes$style, 'margin', '5px')
 			]);
 	});
+var $author$project$Msg$MorePlease = {$: 'MorePlease'};
+var $elm$html$Html$img = _VirtualDom_node('img');
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
+var $author$project$View$viewCatGif = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onClick($author$project$Msg$MorePlease),
+						A2($elm$html$Html$Attributes$style, 'display', 'block')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('More Please!')
+					])),
+				A2(
+				$elm$html$Html$img,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$src(model.gifOfCatFromInternet)
+					]),
+				_List_Nil)
+			]));
+};
 var $author$project$Msg$CancelAlert = {$: 'CancelAlert'};
 var $author$project$Msg$ConfirmAlert = {$: 'ConfirmAlert'};
 var $author$project$Msg$NoOp = {$: 'NoOp'};
@@ -11453,6 +11529,7 @@ var $author$project$View$view = function (model) {
 					])),
 				$author$project$View$viewDinos(model),
 				$author$project$View$viewConfirmAlert(model),
+				$author$project$View$viewCatGif(model),
 				A2(
 				$elm$html$Html$pre,
 				_List_Nil,
@@ -11465,4 +11542,4 @@ var $author$project$View$view = function (model) {
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{init: $author$project$Main$init, subscriptions: $author$project$Main$subscriptions, update: $author$project$Update$update, view: $author$project$View$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Msg.Msg","aliases":{},"unions":{"Msg.Msg":{"args":[],"tags":{"DinoList":[],"DinoName":["String.String"],"DinoAge":["String.String"],"SaveDinoKind":["String.String"],"DinoSearchInput":["String.String"],"DinoFilter":["Model.DinoKind"],"DinoDelete":["Basics.Int"],"ConfirmAlert":[],"CancelAlert":[],"GotText":["Result.Result Http.Error String.String"],"NoOp":[]}},"Model.DinoKind":{"args":[],"tags":{"Big":[],"Medium":[],"Small":[],"NoKind":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"String.String":{"args":[],"tags":{"String":[]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Msg.Msg","aliases":{},"unions":{"Msg.Msg":{"args":[],"tags":{"DinoList":[],"DinoName":["String.String"],"DinoAge":["String.String"],"SaveDinoKind":["String.String"],"DinoSearchInput":["String.String"],"DinoFilter":["Model.DinoKind"],"DinoDelete":["Basics.Int"],"ConfirmAlert":[],"CancelAlert":[],"MorePlease":[],"GotText":["Result.Result Http.Error String.String"],"GotGif":["Result.Result Http.Error String.String"],"NoOp":[]}},"Model.DinoKind":{"args":[],"tags":{"Big":[],"Medium":[],"Small":[],"NoKind":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"String.String":{"args":[],"tags":{"String":[]}}}}})}});}(this));
