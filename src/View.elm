@@ -28,6 +28,7 @@ view model =
         , button (Attributes.button (DinoFilter NoKind)) [ text "Show All" ]
         , viewDinos model
         , viewConfirmAlert model
+        , viewCatGif model
         , pre [] [ text model.fullTextFromInternet ]
         ]
 
@@ -103,6 +104,14 @@ viewDinos model =
                 )
              --End of search filter
             )
+        ]
+
+
+viewCatGif : Model -> Html Msg
+viewCatGif model =
+    div []
+        [ button [ onClick MorePlease, style "display" "block" ] [ text "More Please!" ]
+        , img [ src model.gifOfCatFromInternet ] []
         ]
 
 

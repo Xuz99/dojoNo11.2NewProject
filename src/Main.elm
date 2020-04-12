@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Browser
+import CalledHttp exposing (..)
 import DinosList
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -27,11 +28,9 @@ init _ =
       , filterKind = NoKind
       , showConfirm = False
       , fullTextFromInternet = ""
+      , gifOfCatFromInternet = ""
       }
-    , Http.get
-        { url = "https://elm-lang.org/assets/public-opinion.txt"
-        , expect = Http.expectString GotText
-        }
+    , Cmd.batch [ getText, getCat ]
     )
 
 
