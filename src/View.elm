@@ -13,11 +13,11 @@ view model =
     div Attributes.dino
         [ h1 [] [ text "Dino Catalog!" ]
         , viewSearchBar model
-        , input (Attributes.textInput DinoName "Name") []
+        , input (Attributes.textInput DinoName "Name" "") []
         , viewValidation model "name"
-        , input (Attributes.textInput DinoAge "Age") []
+        , input (Attributes.textInput DinoAge "Age" "") []
         , viewValidation model "age"
-        , input (Attributes.textInput SaveDinoKind "Kind") []
+        , input (Attributes.textInput SaveDinoKind "Kind" "") []
         , viewValidation model "kind"
         , button (Attributes.button DinoList) [ text "Send me a new Dino!" ]
         , br [] []
@@ -77,8 +77,9 @@ viewDinos model =
                                     ++ ""
                                 )
                             , br [] []
-                            , button (Attributes.button NoOp) [ text "Edit" ]
+                            , button (Attributes.button (DinoEdit dino.dinoID)) [ text "Edit" ]
                             , button (Attributes.button (DinoDelete dino.dinoID)) [ text "Delete" ]
+                            , viewEditDino dino model
                             ]
 
                         --                        , p [] [ text ("Post ID: " ++ String.fromInt dino.dinoID) ]
@@ -104,6 +105,38 @@ viewDinos model =
              --End of search filter
             )
         ]
+
+
+viewEditDino : Dino -> Model -> Html Msg
+viewEditDino dino model =
+    let
+        dinoKindToString kind =
+            case dino.kind of
+                Big ->
+                    "Big"
+
+                Medium ->
+                    "Medium"
+
+                Small ->
+                    "Small"
+
+                NoKind ->
+                    "No Kind!"
+    in
+    case dino.showMore of
+        True ->
+            div []
+                [ h3 [ style "color" "blue" ] [ text "Edit the Dino!" ]
+                , input (Attributes.textInput EditDinoName "Name" model.newName) []
+                , input (Attributes.textInput EditDinoAge "Age" (String.fromInt model.newAge)) []
+                , input (Attributes.textInput EditDinoKind "Kind" (dinoKindToString model.newKind)) []
+                , button [ onClick EditConfirmAlert ] [ text "Yes, edit the Dino!" ]
+                , button [ onClick EditCancelAlert ] [ text "Cancel" ]
+                ]
+
+        False ->
+            div [] []
 
 
 viewConfirmAlert : Model -> Html Msg

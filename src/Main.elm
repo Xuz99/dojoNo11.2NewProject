@@ -22,10 +22,14 @@ init _ =
       , age = 0
       , kind = NoKind
       , dinoIDToDelete = 999999999
+      , dinoIDToEdit = 999999999
       , dinoList = DinosList.dinoCatalog
       , dinoSearch = ""
       , filterKind = NoKind
       , showConfirm = False
+      , newName = ""
+      , newAge = 0
+      , newKind = NoKind
       , fullTextFromInternet = ""
       }
     , Http.get

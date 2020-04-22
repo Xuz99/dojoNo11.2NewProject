@@ -6,10 +6,14 @@ type alias Model =
     , age : Int
     , kind : DinoKind
     , dinoIDToDelete : Int
+    , dinoIDToEdit : Int
     , dinoList : List Dino
     , dinoSearch : String
     , filterKind : DinoKind
     , showConfirm : Bool
+    , newName : String
+    , newAge : Int
+    , newKind : DinoKind
     , fullTextFromInternet : String
     }
 
@@ -19,6 +23,7 @@ type alias Dino =
     , name : String
     , age : Int
     , kind : DinoKind
+    , showMore : Bool
     }
 
 

@@ -15,4 +15,10 @@ type Msg
     | ConfirmAlert
     | CancelAlert
     | GotText (Result Http.Error String)
+    | DinoEdit Int
+    | EditDinoName String
+    | EditDinoAge String
+    | EditDinoKind String
+    | EditConfirmAlert
+    | EditCancelAlert
     | NoOp

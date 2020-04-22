@@ -10720,9 +10720,9 @@ var $author$project$Model$Medium = {$: 'Medium'};
 var $author$project$Model$Small = {$: 'Small'};
 var $author$project$DinosList$dinoCatalog = _List_fromArray(
 	[
-		{age: 22, dinoID: 1, kind: $author$project$Model$Big, name: 'Tommy the Dino'},
-		{age: 11, dinoID: 2, kind: $author$project$Model$Small, name: 'Barny the Dino'},
-		{age: 16, dinoID: 3, kind: $author$project$Model$Medium, name: 'Max the Dino'}
+		{age: 22, dinoID: 1, kind: $author$project$Model$Big, name: 'Tommy the Dino', showMore: false},
+		{age: 11, dinoID: 2, kind: $author$project$Model$Small, name: 'Barny the Dino', showMore: false},
+		{age: 16, dinoID: 3, kind: $author$project$Model$Medium, name: 'Max the Dino', showMore: false}
 	]);
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
@@ -10967,7 +10967,7 @@ var $elm$http$Http$get = function (r) {
 };
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		{age: 0, dinoIDToDelete: 999999999, dinoList: $author$project$DinosList$dinoCatalog, dinoSearch: '', filterKind: $author$project$Model$NoKind, fullTextFromInternet: '', kind: $author$project$Model$NoKind, name: '', showConfirm: false},
+		{age: 0, dinoIDToDelete: 999999999, dinoIDToEdit: 999999999, dinoList: $author$project$DinosList$dinoCatalog, dinoSearch: '', filterKind: $author$project$Model$NoKind, fullTextFromInternet: '', kind: $author$project$Model$NoKind, name: '', newAge: 0, newKind: $author$project$Model$NoKind, newName: '', showConfirm: false},
 		$elm$http$Http$get(
 			{
 				expect: $elm$http$Http$expectString($author$project$Msg$GotText),
@@ -10990,6 +10990,15 @@ var $elm$core$List$filter = F2(
 			_List_Nil,
 			list);
 	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
 var $author$project$Update$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -11036,7 +11045,8 @@ var $author$project$Update$update = F2(
 					age: model.age,
 					dinoID: $elm$core$List$length(model.dinoList) + 1,
 					kind: model.kind,
-					name: model.name
+					name: model.name,
+					showMore: false
 				};
 				return ((model.name === '') || ((!model.age) || _Utils_eq(model.kind, $author$project$Model$NoKind))) ? _Utils_Tuple2(model, $elm$core$Platform$Cmd$none) : _Utils_Tuple2(
 					_Utils_update(
@@ -11065,6 +11075,97 @@ var $author$project$Update$update = F2(
 					_Utils_update(
 						model,
 						{dinoIDToDelete: toDeleteDinoID, showConfirm: true}),
+					$elm$core$Platform$Cmd$none);
+			case 'EditDinoName':
+				var dinoNameToEdit = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{newName: dinoNameToEdit}),
+					$elm$core$Platform$Cmd$none);
+			case 'EditDinoAge':
+				var dinoAgeToEdit = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							newAge: A2(
+								$elm$core$Maybe$withDefault,
+								0,
+								$elm$core$String$toInt(dinoAgeToEdit))
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'EditDinoKind':
+				var dinoKindToEditFromUser = msg.a;
+				var dinoKindToEdit = function () {
+					switch (dinoKindToEditFromUser) {
+						case 'Big':
+							return $author$project$Model$Big;
+						case 'Medium':
+							return $author$project$Model$Medium;
+						case 'Small':
+							return $author$project$Model$Small;
+						default:
+							return $author$project$Model$NoKind;
+					}
+				}();
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{newKind: dinoKindToEdit}),
+					$elm$core$Platform$Cmd$none);
+			case 'DinoEdit':
+				var toEditDinoID = msg.a;
+				var newDinoList = A2(
+					$elm$core$List$map,
+					function (dino) {
+						return _Utils_eq(dino.dinoID, toEditDinoID) ? _Utils_update(
+							dino,
+							{showMore: true}) : dino;
+					},
+					model.dinoList);
+				var dinoFilter = A2(
+					$elm$core$Maybe$withDefault,
+					{age: 0, dinoID: 0, kind: $author$project$Model$NoKind, name: '', showMore: false},
+					$elm$core$List$head(
+						A2(
+							$elm$core$List$filter,
+							function (dino) {
+								return _Utils_eq(dino.dinoID, toEditDinoID);
+							},
+							model.dinoList)));
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{dinoIDToEdit: toEditDinoID, dinoList: newDinoList, newAge: dinoFilter.age, newKind: dinoFilter.kind, newName: dinoFilter.name}),
+					$elm$core$Platform$Cmd$none);
+			case 'EditConfirmAlert':
+				var newDinoList = A2(
+					$elm$core$List$map,
+					function (dino) {
+						return _Utils_eq(dino.dinoID, model.dinoIDToEdit) ? _Utils_update(
+							dino,
+							{age: model.newAge, kind: model.newKind, name: model.newName, showMore: false}) : dino;
+					},
+					model.dinoList);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{dinoList: newDinoList}),
+					$elm$core$Platform$Cmd$none);
+			case 'EditCancelAlert':
+				var newDinoList = A2(
+					$elm$core$List$map,
+					function (dino) {
+						return _Utils_eq(dino.dinoID, model.dinoIDToEdit) ? _Utils_update(
+							dino,
+							{showMore: false}) : dino;
+					},
+					model.dinoList);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{dinoList: newDinoList}),
 					$elm$core$Platform$Cmd$none);
 			case 'ConfirmAlert':
 				var newDinoList = A2(
@@ -11118,7 +11219,7 @@ var $author$project$Attributes$button = function (msg) {
 	return _List_fromArray(
 		[
 			A2($elm$html$Html$Attributes$style, 'color', '#ffffff'),
-			A2($elm$html$Html$Attributes$style, 'background-color', '#000000'),
+			A2($elm$html$Html$Attributes$style, 'background-color', '#506798'),
 			A2($elm$html$Html$Attributes$style, 'text-transform', 'capitalize'),
 			A2($elm$html$Html$Attributes$style, 'border', '0px'),
 			A2($elm$html$Html$Attributes$style, 'padding', '5px'),
@@ -11137,11 +11238,12 @@ var $author$project$Attributes$dino = _List_fromArray(
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$html$Html$pre = _VirtualDom_node('pre');
 var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
-var $author$project$Attributes$textInput = F2(
-	function (customInputs, customPlaceHolders) {
+var $author$project$Attributes$textInput = F3(
+	function (customInputs, customPlaceHolders, modelValue) {
 		return _List_fromArray(
 			[
 				$elm$html$Html$Events$onInput(customInputs),
+				$elm$html$Html$Attributes$value(modelValue),
 				$elm$html$Html$Attributes$placeholder(customPlaceHolders),
 				A2($elm$html$Html$Attributes$style, 'background-color', '#ffbb99'),
 				A2($elm$html$Html$Attributes$style, 'color', 'red'),
@@ -11209,8 +11311,100 @@ var $author$project$View$viewConfirmAlert = function (model) {
 var $author$project$Msg$DinoDelete = function (a) {
 	return {$: 'DinoDelete', a: a};
 };
+var $author$project$Msg$DinoEdit = function (a) {
+	return {$: 'DinoEdit', a: a};
+};
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
 var $elm$core$List$sortBy = _List_sortBy;
+var $author$project$Msg$EditCancelAlert = {$: 'EditCancelAlert'};
+var $author$project$Msg$EditConfirmAlert = {$: 'EditConfirmAlert'};
+var $author$project$Msg$EditDinoAge = function (a) {
+	return {$: 'EditDinoAge', a: a};
+};
+var $author$project$Msg$EditDinoKind = function (a) {
+	return {$: 'EditDinoKind', a: a};
+};
+var $author$project$Msg$EditDinoName = function (a) {
+	return {$: 'EditDinoName', a: a};
+};
+var $elm$html$Html$h3 = _VirtualDom_node('h3');
+var $author$project$View$viewEditDino = F2(
+	function (dino, model) {
+		var dinoKindToString = function (kind) {
+			var _v1 = dino.kind;
+			switch (_v1.$) {
+				case 'Big':
+					return 'Big';
+				case 'Medium':
+					return 'Medium';
+				case 'Small':
+					return 'Small';
+				default:
+					return 'No Kind!';
+			}
+		};
+		var _v0 = dino.showMore;
+		if (_v0) {
+			return A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$h3,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'color', 'blue')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Edit the Dino!')
+							])),
+						A2(
+						$elm$html$Html$input,
+						A3($author$project$Attributes$textInput, $author$project$Msg$EditDinoName, 'Name', model.newName),
+						_List_Nil),
+						A2(
+						$elm$html$Html$input,
+						A3(
+							$author$project$Attributes$textInput,
+							$author$project$Msg$EditDinoAge,
+							'Age',
+							$elm$core$String$fromInt(model.newAge)),
+						_List_Nil),
+						A2(
+						$elm$html$Html$input,
+						A3(
+							$author$project$Attributes$textInput,
+							$author$project$Msg$EditDinoKind,
+							'Kind',
+							dinoKindToString(model.newKind)),
+						_List_Nil),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick($author$project$Msg$EditConfirmAlert)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Yes, edit the Dino!')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick($author$project$Msg$EditCancelAlert)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Cancel')
+							]))
+					]));
+		} else {
+			return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+		}
+	});
 var $author$project$View$viewDinos = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -11252,7 +11446,8 @@ var $author$project$View$viewDinos = function (model) {
 											A2($elm$html$Html$br, _List_Nil, _List_Nil),
 											A2(
 											$elm$html$Html$button,
-											$author$project$Attributes$button($author$project$Msg$NoOp),
+											$author$project$Attributes$button(
+												$author$project$Msg$DinoEdit(dino.dinoID)),
 											_List_fromArray(
 												[
 													$elm$html$Html$text('Edit')
@@ -11264,7 +11459,8 @@ var $author$project$View$viewDinos = function (model) {
 											_List_fromArray(
 												[
 													$elm$html$Html$text('Delete')
-												]))
+												])),
+											A2($author$project$View$viewEditDino, dino, model)
 										]))
 								]));
 					},
@@ -11397,17 +11593,17 @@ var $author$project$View$view = function (model) {
 				$author$project$View$viewSearchBar(model),
 				A2(
 				$elm$html$Html$input,
-				A2($author$project$Attributes$textInput, $author$project$Msg$DinoName, 'Name'),
+				A3($author$project$Attributes$textInput, $author$project$Msg$DinoName, 'Name', ''),
 				_List_Nil),
 				A2($author$project$View$viewValidation, model, 'name'),
 				A2(
 				$elm$html$Html$input,
-				A2($author$project$Attributes$textInput, $author$project$Msg$DinoAge, 'Age'),
+				A3($author$project$Attributes$textInput, $author$project$Msg$DinoAge, 'Age', ''),
 				_List_Nil),
 				A2($author$project$View$viewValidation, model, 'age'),
 				A2(
 				$elm$html$Html$input,
-				A2($author$project$Attributes$textInput, $author$project$Msg$SaveDinoKind, 'Kind'),
+				A3($author$project$Attributes$textInput, $author$project$Msg$SaveDinoKind, 'Kind', ''),
 				_List_Nil),
 				A2($author$project$View$viewValidation, model, 'kind'),
 				A2(
@@ -11465,4 +11661,4 @@ var $author$project$View$view = function (model) {
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{init: $author$project$Main$init, subscriptions: $author$project$Main$subscriptions, update: $author$project$Update$update, view: $author$project$View$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Msg.Msg","aliases":{},"unions":{"Msg.Msg":{"args":[],"tags":{"DinoList":[],"DinoName":["String.String"],"DinoAge":["String.String"],"SaveDinoKind":["String.String"],"DinoSearchInput":["String.String"],"DinoFilter":["Model.DinoKind"],"DinoDelete":["Basics.Int"],"ConfirmAlert":[],"CancelAlert":[],"GotText":["Result.Result Http.Error String.String"],"NoOp":[]}},"Model.DinoKind":{"args":[],"tags":{"Big":[],"Medium":[],"Small":[],"NoKind":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"String.String":{"args":[],"tags":{"String":[]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Msg.Msg","aliases":{},"unions":{"Msg.Msg":{"args":[],"tags":{"DinoList":[],"DinoName":["String.String"],"DinoAge":["String.String"],"SaveDinoKind":["String.String"],"DinoSearchInput":["String.String"],"DinoFilter":["Model.DinoKind"],"DinoDelete":["Basics.Int"],"ConfirmAlert":[],"CancelAlert":[],"GotText":["Result.Result Http.Error String.String"],"DinoEdit":["Basics.Int"],"EditDinoName":["String.String"],"EditDinoAge":["String.String"],"EditDinoKind":["String.String"],"EditConfirmAlert":[],"EditCancelAlert":[],"NoOp":[]}},"Model.DinoKind":{"args":[],"tags":{"Big":[],"Medium":[],"Small":[],"NoKind":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"String.String":{"args":[],"tags":{"String":[]}}}}})}});}(this));

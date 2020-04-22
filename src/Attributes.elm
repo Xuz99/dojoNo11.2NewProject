@@ -16,7 +16,7 @@ dino =
 
 button msg =
     [ style "color" "#ffffff"
-    , style "background-color" "#000000"
+    , style "background-color" "#506798"
     , style "text-transform" "capitalize"
     , style "border" "0px"
     , style "padding" "5px"
@@ -35,8 +35,9 @@ confirmAlert msg =
         ++ button msg
 
 
-textInput customInputs customPlaceHolders =
+textInput customInputs customPlaceHolders modelValue =
     [ onInput customInputs
+    , value modelValue
     , placeholder customPlaceHolders
     , style "background-color" "#ffbb99"
     , style "color" "red"
